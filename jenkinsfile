@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // Clone the GitHub repository
+                git 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
+            }
+        }
+        stage('Test') {
+            steps {
+                // Run tests if any
+                sh 'npm test'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                // Build Docker image
+                sh 'docker build -t vueimage .'
+            }
+        }
+        stage('run Docker Container') {
+            steps {
+                // Build Docker image
+                sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
+            }
+        }
+    }
+}
+
+
+        // stage('Push Docker Image') {
+        //     steps {
+        //         // Push Docker image to Docker Hub or Amazon ECR
+        //         sh 'docker push yourimage:latest'
+        //     }
+        // }
+        // stage('Deploy to AWS') {
+        //     steps {
+        //         // Deploy Docker image to AWS (ECS, Elastic Beanstalk, etc.)
+        //         // Example command for ECS:
+        //         sh 'aws ecs update-service --cluster yourcluster --service yourservice --force-new-deployment'
+        //     }
+        // }
+
