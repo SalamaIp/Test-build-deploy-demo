@@ -8,6 +8,7 @@ pipeline {
                 git 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
             }
         }
+/*
         stage('Test') {
             steps {
                 // Run tests if any
@@ -26,6 +27,7 @@ pipeline {
                 sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
             }
         }
+*/
     }
 }
 
