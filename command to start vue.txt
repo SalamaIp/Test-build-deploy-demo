@@ -1,0 +1,24 @@
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=yourStrong(!)Password" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
+ex:
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=@nrmip313" -p 1433:1433 --network=bridge -d --name sqlserver 994123c66ce4
+
+cd to file location first
+docker cp quiz.bak sqlserver:/var/opt/mssql/backup
+
+if you want to test the output in sql GUI
+RESTORE FILELISTONLY FROM DISK = '/var/opt/mssql/backup/quiz.bak';
+
+docker exec -d -it sqltest /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '@nrmip313' -Q 'RESTORE DATABASE Quiz FROM DISK = "/var/opt/mssql/backup/quiz.bak" WITH MOVE "quiz" TO "/var/opt/mssql/data/quiz.mdf", MOVE "quiz_log" TO "/var/opt/mssql/data/quiz_.ldf"'
+
+apt-get update && apt-get install -y iputils-ping /// to install ping 
+
+apt-get update && apt-get install -y netcat-traditional // install netcat 
+nc -vz 172.17.0.4 1433 // try to telnet 
+
+
+code from internet 
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=@nrmip313" -p 1433:1433 --network=bridge -d --name sqlcontainer 376667ae3d77
+
+docker run -p 3000:8080  -d --link sqlserver:sqlserver -e "ServerName=sqlserver" -e "Database=Quiz" -e "UserName=SA" -e "Password=@nrmip313" --name backendcontainer backendimage
+
+
