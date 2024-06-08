@@ -1,33 +1,70 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_HOME = "${tool 'NodeJS'}"
+        PATH = "${NODE_HOME}/bin:${env.PATH}"
+    }
+
     stages {
         stage('Clone Repository') {
             steps {
                 // Clone the GitHub repository
-                 git branch: 'main', credentialsId: 'GitHub-Test-Build-Deploy', url: 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
+                git branch: 'main', credentialsId: 'GitHub-Test-Build-Deploy', url: 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
             }
         }
+        
+        stage('Install Dependencies') {
+            steps {
+                // Install npm dependencies
+                sh 'npm install'
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                // Run linting
+                sh 'npm run lint'
+            }
+        }
+        
         stage('Test') {
             steps {
-                // Run tests if any
+                // Run tests
                 sh 'npm test'
             }
         }
+        
+        stage('Build') {
+            steps {
+                // Build the project
+                sh 'npm run build'
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 // Build Docker image
                 sh 'docker build -t vueimage .'
             }
         }
-        stage('run Docker Container') {
+        
+        stage('Run Docker Container') {
             steps {
-                // Build Docker image
+                // Run Docker container
                 sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
             }
         }
     }
+    
+    post {
+        always {
+            // Cleanup Docker container
+            sh 'docker rm -f vuecontainer || true'
+        }
+    }
 }
+
 
 
         // stage('Push Docker Image') {
@@ -43,4 +80,6 @@ pipeline {
         //         sh 'aws ecs update-service --cluster yourcluster --service yourservice --force-new-deployment'
         //     }
         // }
+
+
 
