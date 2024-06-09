@@ -69,19 +69,6 @@ pipeline {
         }
 
     }
-    /*
-    post {
-        always {
-            script {
-                try {
-                    sh 'docker rm -f vuecontainer'
-                } catch (Exception e) {
-                    echo 'Container already removed or does not exist'
-                }
-            }
-        }
-    }
-*/
 }
 
 
