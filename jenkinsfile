@@ -54,8 +54,13 @@ pipeline {
     
     post {
         always {
-            // Cleanup Docker container
-            sh 'docker rm -f vuecontainer || true'
+            script {
+                try {
+                    sh 'docker rm -f vuecontainer'
+                } catch (Exception e) {
+                    echo 'Container already removed or does not exist'
+                }
+            }
         }
     }
 }
