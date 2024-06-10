@@ -68,6 +68,7 @@ pipeline {
                     if (isComposeRunning == 0) {
                         echo 'Docker Compose is already running'
                         sh 'docker-compose down'
+                        sh 'docker rmi vueimage'
                     }
                     sh 'docker-compose up --build -d'
                 }
