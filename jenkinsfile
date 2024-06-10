@@ -68,6 +68,13 @@ pipeline {
                     if (isComposeRunning == 0) {
                         echo 'Docker Compose is already running'
                         sh 'docker-compose down'
+
+                        def runningContainers = sh(script: 'docker ps -q --filter "ancestor=vueimage"', returnStdout: true).trim()
+                        if (runningContainers) {
+                            sh "docker stop ${runningContainers}"
+                            sh "docker rm ${runningContainers}"
+                        }
+                        
                         sh 'docker rmi vueimage'
                     }
                     sh 'docker-compose up --build -d'
