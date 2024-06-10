@@ -1,11 +1,11 @@
 <template>
   <div class="hello">
-    <h1>Hello Salamaa</h1>zad
+    <h1>Hello Salamaa</h1>
   </div>
 </template>
 
 <script>
-
+afsdfqwef
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
