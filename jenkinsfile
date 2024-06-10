@@ -61,12 +61,22 @@ pipeline {
         //     }
         // }
         
-        stage('Run Docker Container') {
+        stage('check if there is a Container running') {
             steps {
+                script{
+                    def isComposeRunning = sh(script: docker-compose ps -q, returnStatus = true)
+                    if (isComposeRunning==0){
+                        echo 'Docker compose is already running '
+                        sh 'docker-compose down'
+                        sh 'docker-compose up --build -d'
+                    }
+                    else{
+                        echo 'Docker compose is not running'
+                        sh 'docker-compose up --build -d'
+                    }
+                }
                 // Run Docker container
                 // sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
-                sh 'docker-compose down'
-                sh 'docker-compose -d up'
             }
         }
 
