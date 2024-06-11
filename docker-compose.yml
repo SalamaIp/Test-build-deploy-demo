@@ -3,10 +3,8 @@ services:
   vueapp:
     image: vueimage
     build:
-      context: .
+      context: ./
       dockerfile: Dockerfile
-    volumes:
-      - ./:/usr/sec/app
     container_name: vuecontainer
     ports:
       - "3000:8080"
