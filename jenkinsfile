@@ -9,34 +9,6 @@ pipeline {
             }
         }
         
-        stage('Install Dependencies') {
-            steps {
-                // Install npm dependencies
-                sh 'npm install'
-            }
-        }
-        
-        stage('Lint') {
-            steps {
-                // Run linting
-                sh 'npm run lint'
-            }
-        }
-        
-        stage('Test') {
-            steps {
-                // Run tests
-                sh 'npm test'
-            }
-        }
-        
-        stage('Build') {
-            steps {
-                // Build the project
-                sh 'npm run build'
-            }
-        }
-
         stage('Stop Old Container') {
             steps {
                 script {
@@ -66,7 +38,8 @@ pipeline {
                 sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
             }
         }
-        
+    }
+}
         // stage('Check if there is a Container running') {
         //     steps {
         //         script {
@@ -87,11 +60,10 @@ pipeline {
         //         }
         //     }
         // }
-    }
-}
 
 
 
+/*
         // stage('Push Docker Image') {
         //     steps {
         //         // Push Docker image to Docker Hub or Amazon ECR
@@ -105,6 +77,32 @@ pipeline {
         //         sh 'aws ecs update-service --cluster yourcluster --service yourservice --force-new-deployment'
         //     }
         // }
-
-
+        stage('Install Dependencies') {
+            steps {
+                // Install npm dependencies
+                sh 'npm install'
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                // Run linting
+                sh 'npm run lint'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                // Run tests
+                sh 'npm test'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the project
+                sh 'npm run build'
+            }
+        }
+*/
 
