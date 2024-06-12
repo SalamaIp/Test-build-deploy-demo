@@ -5,17 +5,17 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the GitHub repository
-                 git branch: 'main', credentialsId: 'GitHub-Test-Build-Deploy', url: 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
+                git branch: 'main', credentialsId: 'GitHub-Test-Build-Deploy', url: 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
             }
         }
-        /*
+        
         stage('Install Dependencies') {
             steps {
                 // Install npm dependencies
                 sh 'npm install'
             }
         }
-        */
+        
         stage('Lint') {
             steps {
                 // Run linting
@@ -37,50 +37,56 @@ pipeline {
             }
         }
 
-        // stage('Stop Old Container') {
-        //     steps {
-        //         script {
-        //             // Stop and remove old container if it exists
-        //             try {
-        //                 sh 'docker rm vuecontainer -f'
-        //             } catch (Exception e) {
-        //                 echo 'No container to stop or remove'
-        //             }
-        //             try {
-        //                 sh 'docker rmi vueimage'
-        //             } catch (Exception e) {
-        //                 echo 'No image to remove'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Build Docker Image') {
-        //     steps {
-        //         // Build Docker image
-        //         sh 'docker build -t vueimage .'
-        //     }
-        // }
-        
-        stage('Check if there is a Container running') {
+        stage('Stop Old Container') {
             steps {
                 script {
-                    def isComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true)
-                    if (isComposeRunning == 0) {
-                        echo 'Docker Compose is already running'
-                        sh 'docker-compose down'
-
-                        def runningContainers = sh(script: 'docker ps -q --filter "ancestor=vueimage"', returnStdout: true).trim()
-                        if (runningContainers) {
-                            sh "docker stop ${runningContainers}"
-                            sh "docker rm ${runningContainers}"
-                        }
-                        
-                        sh 'docker rmi vueimage'
+                    // Stop and remove old container if it exists
+                    try {
+                        sh 'docker rm vuecontainer -f'
+                    } catch (Exception e) {
+                        echo 'No container to stop or remove'
                     }
-                    sh 'docker-compose up --build -d'
+                    try {
+                        sh 'docker rmi vueimage'
+                    } catch (Exception e) {
+                        echo 'No image to remove'
+                    }
                 }
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                // Build Docker image
+                sh 'docker build -t vueimage .'
+            }
+        }
+        stage('Run Docker Container') {
+            steps {
+                // Build Docker image
+                sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
+            }
+        }
+        
+        // stage('Check if there is a Container running') {
+        //     steps {
+        //         script {
+        //             def isComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true)
+        //             if (isComposeRunning == 0) {
+        //                 echo 'Docker Compose is already running'
+        //                 sh 'docker-compose down'
+
+        //                 def runningContainers = sh(script: 'docker ps -q --filter "ancestor=vueimage"', returnStdout: true).trim()
+        //                 if (runningContainers) {
+        //                     sh "docker stop ${runningContainers}"
+        //                     sh "docker rm ${runningContainers}"
+        //                 }
+                        
+        //                 sh 'docker rmi vueimage'
+        //             }
+        //             sh 'docker-compose up --build -d'
+        //         }
+        //     }
+        // }
     }
 }
 
