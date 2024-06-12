@@ -8,14 +8,14 @@ pipeline {
                  git branch: 'main', credentialsId: 'GitHub-Test-Build-Deploy', url: 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
             }
         }
-        
+        /*
         stage('Install Dependencies') {
             steps {
                 // Install npm dependencies
                 sh 'npm install'
             }
         }
-        
+        */
         stage('Lint') {
             steps {
                 // Run linting
