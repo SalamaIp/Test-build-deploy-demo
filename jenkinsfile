@@ -9,23 +9,7 @@ pipeline {
             }
         }
         
-        stage('Stop Old Container') {
-            steps {
-                script {
-                    // Stop and remove old container if it exists
-                    try {
-                        sh 'docker rm vuecontainer -f'
-                    } catch (Exception e) {
-                        echo 'No container to stop or remove'
-                    }
-                    try {
-                        sh 'docker rmi vueimage'
-                    } catch (Exception e) {
-                        echo 'No image to remove'
-                    }
-                }
-            }
-        }
+
         stage('Build Docker Image') {
             steps {
                 // Build Docker image
