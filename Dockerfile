@@ -5,4 +5,4 @@ RUN npm install
 COPY . .
 RUN npm run build
 EXPOSE 80
-CMD ["npm", "run","serve"]
+RUN npm run serve
