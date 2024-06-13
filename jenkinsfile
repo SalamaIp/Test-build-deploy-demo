@@ -8,42 +8,69 @@ pipeline {
                 git branch: 'main', credentialsId: 'GitHub-Test-Build-Deploy', url: 'https://github.com/SalamaIp/Test-build-deploy-demo.git'
             }
         }
+        stage('Install Dependencies') {
+            steps {
+                // Install npm dependencies
+                sh 'npm install'
+            }
+        }
         
-
-        stage('Build Docker Image') {
+        stage('Lint') {
             steps {
-                // Build Docker image
-                sh 'docker build -t vueimage .'
+                // Run linting
+                sh 'npm run lint'
             }
         }
-        stage('Run Docker Container') {
+        
+        stage('Test') {
             steps {
-                // Build Docker image
-                sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
+                // Run tests
+                sh 'npm test'
             }
         }
-    }
-}
-        // stage('Check if there is a Container running') {
-        //     steps {
-        //         script {
-        //             def isComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true)
-        //             if (isComposeRunning == 0) {
-        //                 echo 'Docker Compose is already running'
-        //                 sh 'docker-compose down'
+        
+        stage('Build') {
+            steps {
+                // Build the project
+                sh 'npm run build'
+            }
+        }
+    stage('Check if there is a Container running') {
+        steps {
+                script {
+                    def isComposeRunning = sh(script: 'docker-compose ps -q', returnStatus: true)
+                    if (isComposeRunning == 0) {
+                        echo 'Docker Compose is already running'
+                        sh 'docker-compose down'
 
-        //                 def runningContainers = sh(script: 'docker ps -q --filter "ancestor=vueimage"', returnStdout: true).trim()
-        //                 if (runningContainers) {
-        //                     sh "docker stop ${runningContainers}"
-        //                     sh "docker rm ${runningContainers}"
-        //                 }
+                        def runningContainers = sh(script: 'docker ps -q --filter "ancestor=vueimage"', returnStdout: true).trim()
+                        if (runningContainers) {
+                            sh "docker stop ${runningContainers}"
+                            sh "docker rm ${runningContainers}"
+                        }
                         
-        //                 sh 'docker rmi vueimage'
-        //             }
-        //             sh 'docker-compose up --build -d'
-        //         }
+                        sh 'docker rmi vueimage'
+                    }
+                    sh 'docker-compose up --build -d'
+                }
+            }
+        }
+
+        // stage('Build Docker Image') {
+        //     steps {
+        //         // Build Docker image
+        //         sh 'docker build -t vueimage .'
         //     }
         // }
+        // stage('Run Docker Container') {
+        //     steps {
+        //         // Build Docker image
+        //         sh 'docker run -d -p 3000:8080 --name vuecontainer vueimage'
+        //     }
+        // }
+    }
+}
+
 
 
 
